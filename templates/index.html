@@ -1,0 +1,633 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Elevator Scheduler</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                DAA HACKATHON PROJECT
+            </div>
+
+            <h1>
+                🛗 Smart Elevator Scheduler
+            </h1>
+
+            <p>
+                Intelligent elevator request scheduling
+                using Priority Queue and Greedy Algorithms
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- PROJECT SUMMARY -->
+
+    <section class="info-grid">
+
+        <div class="info-box">
+            <span>🧠 Algorithm 1</span>
+            <strong>Priority Queue</strong>
+        </div>
+
+        <div class="info-box">
+            <span>⚡ Algorithm 2</span>
+            <strong>Greedy</strong>
+        </div>
+
+        <div class="info-box">
+            <span>📊 Objective</span>
+            <strong>Reduce Waiting Time</strong>
+        </div>
+
+        <div class="info-box">
+            <span>🐍 Backend</span>
+            <strong>Python + Flask</strong>
+        </div>
+
+    </section>
+
+
+    <!-- CONFIGURATION -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <div>
+                <span class="section-number">01</span>
+
+                <h2>
+                    Elevator Configuration
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="config">
+
+            <div class="field">
+
+                <label>
+                    Starting Floor
+                </label>
+
+                <input
+                    type="number"
+                    id="startFloor"
+                    value="1"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- REQUEST INPUT -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <div>
+                <span class="section-number">02</span>
+
+                <h2>
+                    Add Elevator Request
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>Request ID</label>
+
+                <input
+                    type="text"
+                    id="requestId"
+                    placeholder="R1"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Passenger Floor</label>
+
+                <input
+                    type="number"
+                    id="currentFloor"
+                    placeholder="3"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Destination Floor</label>
+
+                <input
+                    type="number"
+                    id="destinationFloor"
+                    placeholder="8"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Arrival Time</label>
+
+                <input
+                    type="number"
+                    id="arrivalTime"
+                    placeholder="0"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Priority</label>
+
+                <select id="priority">
+
+                    <option value="1">
+                        1 — Low
+                    </option>
+
+                    <option value="2" selected>
+                        2 — Medium
+                    </option>
+
+                    <option value="3">
+                        3 — High
+                    </option>
+
+                    <option value="4">
+                        4 — Emergency
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                class="primary-button"
+                onclick="addRequest()">
+
+                + Add Request
+
+            </button>
+
+
+            <button
+                class="secondary-button"
+                onclick="loadExample()">
+
+                ⚡ Load Demo Data
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- REQUEST TABLE -->
+
+    <section class="card">
+
+        <div class="section-title">
+
+            <div>
+                <span class="section-number">03</span>
+
+                <h2>
+                    Pending Requests
+                </h2>
+            </div>
+
+            <span
+                class="request-count"
+                id="requestCount">
+                0 Requests
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Passenger</th>
+                        <th>Destination</th>
+                        <th>Arrival</th>
+                        <th>Priority</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="requestTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- RUN CONTROLS -->
+
+    <div class="control-panel">
+
+        <button
+            class="run-button"
+            onclick="runScheduler()">
+
+            🚀 Run Smart Scheduler
+
+        </button>
+
+
+        <button
+            class="clear-button"
+            onclick="clearAll()">
+
+            Reset
+
+        </button>
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <section
+        id="results"
+        class="results hidden">
+
+
+        <div class="section-heading">
+
+            <span class="section-number">
+                04
+            </span>
+
+            <div>
+
+                <h2>
+                    Scheduling Results
+                </h2>
+
+                <p>
+                    Same requests processed using
+                    two different algorithmic strategies.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Algorithm Cards -->
+
+        <div class="comparison">
+
+
+            <!-- PRIORITY -->
+
+            <div class="algorithm-card priority-card">
+
+                <div class="algorithm-header">
+
+                    <div class="algorithm-icon">
+                        🔴
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Priority Queue
+                        </h3>
+
+                        <p>
+                            Priority-driven scheduling
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="metrics">
+
+                    <div class="metric">
+
+                        <span>
+                            Total Waiting
+                        </span>
+
+                        <strong id="priorityTotal">
+                            0
+                        </strong>
+
+                        <small>
+                            time units
+                        </small>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Average Waiting
+                        </span>
+
+                        <strong id="priorityAverage">
+                            0
+                        </strong>
+
+                        <small>
+                            time units
+                        </small>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Elevator Movement
+                        </span>
+
+                        <strong id="priorityMovement">
+                            0
+                        </strong>
+
+                        <small>
+                            floor units
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <h4>
+                    Service Order
+                </h4>
+
+                <div
+                    id="prioritySchedule"
+                    class="schedule">
+                </div>
+
+            </div>
+
+
+            <!-- GREEDY -->
+
+            <div class="algorithm-card greedy-card">
+
+                <div class="algorithm-header">
+
+                    <div class="algorithm-icon">
+                        🟢
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Greedy Algorithm
+                        </h3>
+
+                        <p>
+                            Nearest-request scheduling
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="metrics">
+
+                    <div class="metric">
+
+                        <span>
+                            Total Waiting
+                        </span>
+
+                        <strong id="greedyTotal">
+                            0
+                        </strong>
+
+                        <small>
+                            time units
+                        </small>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Average Waiting
+                        </span>
+
+                        <strong id="greedyAverage">
+                            0
+                        </strong>
+
+                        <small>
+                            time units
+                        </small>
+
+                    </div>
+
+
+                    <div class="metric">
+
+                        <span>
+                            Elevator Movement
+                        </span>
+
+                        <strong id="greedyMovement">
+                            0
+                        </strong>
+
+                        <small>
+                            floor units
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <h4>
+                    Service Order
+                </h4>
+
+                <div
+                    id="greedySchedule"
+                    class="schedule">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Decision Explanation -->
+
+        <div class="decision-box">
+
+            <div class="decision-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    How the Scheduler Makes Decisions
+                </h3>
+
+                <p>
+                    <strong>Priority Queue:</strong>
+                    selects the highest-priority pending
+                    request. Earlier arrival time breaks ties.
+                </p>
+
+                <p>
+                    <strong>Greedy:</strong>
+                    selects the pending request closest
+                    to the elevator's current floor.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Algorithm Flow -->
+
+        <div class="flow-card">
+
+            <h3>
+                🔄 Scheduling Process
+            </h3>
+
+
+            <div class="flow">
+
+                <div class="flow-step">
+                    <span>1</span>
+                    Receive Requests
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="flow-step">
+                    <span>2</span>
+                    Select Request
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="flow-step">
+                    <span>3</span>
+                    Move Elevator
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="flow-step">
+                    <span>4</span>
+                    Calculate Waiting
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <p>
+            Smart Elevator Scheduler •
+            Design & Analysis of Algorithms
+        </p>
+
+    </footer>
+
+</div>
+
+
+<script
+    src="{{ url_for('static', filename='script.js') }}">
+</script>
+
+</body>
+
+</html>
